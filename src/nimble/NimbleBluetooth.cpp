@@ -248,8 +248,9 @@ void NimbleBluetooth::deinit()
     digitalWrite(BLE_LED, LOW);
 #endif
 #endif
-    //if fails disable it.
+#ifndef ESP32C6
     NimBLEDevice::deinit();
+#endif
 #endif
 }
 
