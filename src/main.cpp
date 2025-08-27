@@ -191,6 +191,8 @@ ScanI2C::DeviceAddress cardkb_found = ScanI2C::ADDRESS_NONE;
 uint8_t kb_model;
 // global bool to record that a kb is present
 bool kb_found = false;
+// global bool to record that on-screen keyboard (OSK) is present
+bool osk_found = false;
 
 // The I2C address of the RTC Module (if found)
 ScanI2C::DeviceAddress rtc_found = ScanI2C::ADDRESS_NONE;
@@ -403,6 +405,16 @@ void setup()
     LOG_INFO("\n\n//\\ E S H T /\\ S T / C\n");
 
     initDeepSleep();
+
+#if defined(MODEM_POWER_EN)
+    pinMode(MODEM_POWER_EN, OUTPUT);
+    digitalWrite(MODEM_POWER_EN, LOW);
+#endif
+
+#if defined(MODEM_PWRKEY)
+    pinMode(MODEM_PWRKEY, OUTPUT);
+    digitalWrite(MODEM_PWRKEY, LOW);
+#endif
 
 #if defined(LORA_TCXO_GPIO)
     pinMode(LORA_TCXO_GPIO, OUTPUT);
@@ -1410,6 +1422,10 @@ void setup()
     // Initialize Ethernet
     initEthernet();
 #endif
+#endif
+
+#if defined(HAS_TRACKBALL) || (defined(INPUTDRIVER_ENCODER_TYPE) && INPUTDRIVER_ENCODER_TYPE == 2)
+    osk_found = true;
 #endif
 
 #if defined(ARCH_ESP32) && !MESHTASTIC_EXCLUDE_WEBSERVER
